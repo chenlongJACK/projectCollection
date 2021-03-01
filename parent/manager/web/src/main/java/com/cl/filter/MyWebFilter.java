@@ -1,7 +1,10 @@
 package com.cl.filter;
 
 
+import org.springframework.stereotype.Component;
+
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -10,14 +13,15 @@ import java.io.IOException;
  * @auther chenlong
  * @date 2021/2/2616:15
  */
-@javax.servlet.annotation.WebFilter
-public class WebFilter implements javax.servlet.Filter {
+@WebFilter("/*")
+@Component
+public class MyWebFilter implements Filter {
 
     final String[] resourcePath={""};
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        System.out.println("init");
     }
 
     @Override
