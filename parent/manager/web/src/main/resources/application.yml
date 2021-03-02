@@ -13,7 +13,7 @@ spring:
     #type:
 mybatis:
   #指定pojo所在的包
-  type-aliases-package: com.cl.user.bean
+  type-aliases-package: com.cl.bean
   #指定mapper的xml映射文在所在位置
   mapper-locations: classpath:com/cl/mappers/*.xml
 

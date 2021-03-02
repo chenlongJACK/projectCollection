@@ -1,7 +1,7 @@
 package com.cl.test;
 
-import com.cl.user.bean.User;
-import com.cl.user.dao.IUserDao;
+import com.cl.bean.Account;
+import com.cl.dao.IAccountDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ import java.util.UUID;
 @RunWith(SpringRunner.class)
 public class ApplicationTest {
     @Autowired
-    private IUserDao userDao;
+    private IAccountDao accountDao;
 
     @Test
     public void insertTest(){
         String uuid = UUID.randomUUID().toString();
         String id = uuid.replaceAll("-", "");
-        int insert = userDao.insert(new User(id, "admin", "123456", "admin"));
+        int insert = accountDao.insert(new Account(id, "admin", "123456", "admin"));
         if(insert>0){
             System.out.println("插入成功");
         }else{

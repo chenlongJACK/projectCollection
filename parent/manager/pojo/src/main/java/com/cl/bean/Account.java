@@ -1,4 +1,4 @@
-package com.cl.user.bean;
+package com.cl.bean;
 
 import org.apache.ibatis.type.Alias;
 
@@ -10,8 +10,8 @@ import javax.validation.constraints.NotEmpty;
  * @auther chenlong
  * @date 2021/3/111:25
  */
-@Alias("user")
-public class User {
+@Alias("account")
+public class Account {
     /**主键Id*/
     private String id;
     /**用户名*/
@@ -24,10 +24,10 @@ public class User {
     @NotBlank(message = "姓名不能为空")
     private String name;
 
-    public User() {
+    public Account() {
     }
 
-    public User(String id, String username, String password, String name) {
+    public Account(String id, String username, String password, String name) {
         this.id = id;
         this.username = username;
         this.password = password;
