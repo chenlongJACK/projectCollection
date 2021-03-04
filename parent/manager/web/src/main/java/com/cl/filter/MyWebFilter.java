@@ -17,7 +17,7 @@ import java.io.IOException;
 @Component
 public class MyWebFilter implements Filter {
 
-    final String[] resourcePath={""};
+    final String[] resourcePath={"/js","/manager"};
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -29,7 +29,12 @@ public class MyWebFilter implements Filter {
         HttpServletRequest request=(HttpServletRequest) servletRequest;
         String uri = request.getRequestURI();
         System.out.println(uri);
-        filterChain.doFilter(servletRequest,servletResponse);
+        for (String s : resourcePath) {
+           if(uri.startsWith(s)){
+               filterChain.doFilter(servletRequest,servletResponse);
+               break;
+           }
+        }
     }
 
     @Override
