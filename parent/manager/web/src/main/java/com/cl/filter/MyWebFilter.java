@@ -14,10 +14,10 @@ import java.io.IOException;
  * @date 2021/2/2616:15
  */
 @WebFilter("/*")
-@Component
+
 public class MyWebFilter implements Filter {
 
-    final String[] resourcePath={"/js","/manager"};
+    final String[] resourcePath={"/manager"};
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
