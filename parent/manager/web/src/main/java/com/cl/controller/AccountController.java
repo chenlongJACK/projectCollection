@@ -2,6 +2,9 @@ package com.cl.controller;
 
 
 import com.cl.common.bean.ResultInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/account")
+@Api(description = "用户管理")
 public class AccountController {
 
-    @RequestMapping("login")
+    @PostMapping("/login")
+    @ApiOperation(value = "登录")
     public ResultInfo login(String username, String password){
         ResultInfo resultInfo=new ResultInfo();
         return resultInfo;
