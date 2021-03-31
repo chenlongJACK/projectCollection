@@ -69,6 +69,18 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>2.9.2</version>
             </dependency>
+            <!-- Excel中表格POI插件 -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>3.8</version>
+            </dependency>
+            <!-- poi插件 XSSFWorkbook和SXSSHWorkbook -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>3.8</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

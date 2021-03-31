@@ -1,5 +1,7 @@
 package com.cl.common.bean;
 
+import com.cl.annotation.Excel;
+
 import java.util.List;
 
 /**
@@ -9,8 +11,11 @@ import java.util.List;
  */
 public class ResultInfo {
 
+    @Excel(value = "状态码")
     private String code;
+    @Excel(value = "描述信息")
     private String msg;
+    @Excel(value = "数据",type = Excel.Type.OUTPUT)
     private Object data;
 
     public ResultInfo() {
@@ -44,5 +49,14 @@ public class ResultInfo {
 
     public void setData(Object data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "ResultInfo{" +
+                "code='" + code + '\'' +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.cl.bean;
 
 import org.apache.ibatis.type.Alias;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
