@@ -23,7 +23,7 @@ public @interface Excel {
     /** 允许导入或导出*/
     Type type() default Type.ALL;
 
-     enum Type{
-        ALL,INPUT,OUTPUT;
+    enum Type{
+        ALL,INPUT,OUTPUT
     }
 }
