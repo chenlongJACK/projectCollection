@@ -1,5 +1,6 @@
 package com.cl.bean;
 
+import com.cl.annotation.Excel;
 import org.apache.ibatis.type.Alias;
 import org.springframework.validation.annotation.Validated;
 
@@ -17,12 +18,15 @@ public class Account {
     private String id;
     /**用户名*/
     @NotBlank(message = "用户名不能为空")
+    @Excel("用户名")
     private String username;
     /**密码*/
     @NotBlank(message = "密码不能为空")
+    @Excel("密码")
     private String password;
     /**姓名*/
     @NotBlank(message = "姓名不能为空")
+    @Excel("姓名")
     private String name;
 
     public Account() {

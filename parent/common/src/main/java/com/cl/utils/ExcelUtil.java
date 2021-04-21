@@ -32,7 +32,7 @@ public class ExcelUtil {
     /**
      * 下载模板
      */
-    public static void downLoadTemplate(Class objClass,String templateName){
+    public static <T> void downLoadTemplate(Class<T> objClass,String templateName){
         //获取pojo上的有Excel注解的属性
         Field[] fields = objClass.getDeclaredFields();
         List<String> list=new ArrayList<>();
@@ -62,15 +62,15 @@ public class ExcelUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+    }
 
-    public static void upLoad(Class objClass){
+    public static <T> void upLoad(Class<T> objClass){
         String filePath="D:\\我的文档\\测试.xls";
         FileInputStream fis=null;
         try {
@@ -100,10 +100,10 @@ public class ExcelUtil {
                 }
             }
             //创建对象的集合
-            List<Object> list=new ArrayList<>();
+            List<T> list=new ArrayList<>();
             for (int i = 1; i < sheet.getPhysicalNumberOfRows(); i++) {
                 Row row1 = sheet.getRow(i);
-                Object object = objClass.newInstance();
+                T object = objClass.newInstance();
                 for (int i1 = 0; i1 < row1.getPhysicalNumberOfCells(); i1++) {
                     Field field = fieldMap.get(i1);
                     Class<?> type = field.getType();
@@ -124,8 +124,5 @@ public class ExcelUtil {
                 e.printStackTrace();
             }
         }
-    }
-    public static void main(String[] args) {
-        upLoad(ResultInfo.class);
     }
 }
