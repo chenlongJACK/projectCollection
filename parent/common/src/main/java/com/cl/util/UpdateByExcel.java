@@ -2,19 +2,19 @@ package com.cl.util;
 
 import com.cl.annotation.Excel;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.omg.CORBA.portable.InputStream;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
+
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @Description
@@ -47,14 +47,13 @@ public class UpdateByExcel {
         System.out.println(fieldNames);
     }
 
-    public static <T> void updateByExcel(MultipartFile file,Class<T> tClass,Map<String,String> fieldNames){
+    public static <T> List<T> updateByExcel(String fileName, InputStream is,Class<T> tClass, Map<String,String> fieldNames){
         try {
-            String name = file.getName();
             Workbook workbook = null;
-            if (name.endsWith(".xlsx")) {
-                workbook = new XSSFWorkbook(file.getInputStream());
-            } else if (name.endsWith(".xls")) {
-                workbook = new HSSFWorkbook(file.getInputStream());
+            if (fileName.endsWith(".xlsx")) {
+                workbook = new XSSFWorkbook(is);
+            } else if (fileName.endsWith(".xls")) {
+                workbook = new HSSFWorkbook(is);
             }
             Sheet sheet = workbook.getSheetAt(0);
             Row row = sheet.getRow(0);
@@ -67,14 +66,36 @@ public class UpdateByExcel {
             Field[] fields = tClass.getDeclaredFields();
             Map<Integer,Field> fieldMap=new HashMap<>();
             for (Field field : fields) {
-                String fileName = fieldNames.get(field.getName());
-                // 设置类的私有字段属性可访问.
+                //获取传入更新列的中文描述
+                String fieldName = fieldNames.get(field.getName());
+                //设置类的私有字段属性可访问.
                 field.setAccessible(true);
-                fieldMap.put(cellMap.get(fileName), field);
+                //设置列号与pojo属性映射关系
+                fieldMap.put(cellMap.get(fieldName), field);
             }
-
+            //创建对象的集合
+            List<T> list=new ArrayList<>();
+            int physicalNumberOfRows = sheet.getPhysicalNumberOfRows();
+            for (int i = 1; i <physicalNumberOfRows; i++) {
+                Row row1 = sheet.getRow(i);
+                T t = tClass.newInstance();
+                int physicalNumberOfCells = row1.getPhysicalNumberOfCells();
+                for (int i1 = 0; i1 <physicalNumberOfCells ; i1++) {
+                    Field field = fieldMap.get(i1);
+                    Class<?> type = field.getType();
+                    if(type==String.class) {//字符串类型
+                        row1.getCell(i1).setCellType(Cell.CELL_TYPE_STRING);
+                    }
+                    if(type==Integer.class){
+                        row1.getCell(i1).setCellType(Cell.CELL_TYPE_NUMERIC);
+                    }
+                    field.set(t,row1.getCell(i1).getStringCellValue());
+                }
+                list.add(t);
+            }
+            return list;
         }catch (Exception e){
-
+            throw new RuntimeException("系统异常");
         }
     }
     public static void main(String[] args) {
