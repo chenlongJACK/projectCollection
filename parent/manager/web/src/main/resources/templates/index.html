@@ -7,11 +7,24 @@
 </head>
 <body>
     <p1>
-        HELLO
+        <div>
+            <form action="/manager/account/getTemplate?fileName=测试" type="post">
+                <input type="submit">
+            </form>
+        </div>
     </p1>
 <script>
     $(function(){
+        var vlues=["name","age"]
+        $.ajax({
+            url:"/manager/account/getTemplate?fileName=测试",
+            type:"post",
+            contentType:"application/json",
+            data:JSON.stringify(vlues),
+            success:function (res) {
 
+            }
+        });
     })
 </script>
 </body>

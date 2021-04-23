@@ -6,9 +6,11 @@ import com.cl.bean.util.FieldCollection;
 import com.cl.common.bean.ResultInfo;
 import com.cl.dao.IAccountDao;
 import com.cl.service.IRoleService;
+import com.cl.util.ExcelUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -56,10 +64,27 @@ public class AccountController {
         }
         try {
             aClass = Class.forName(className);
-           resultInfo = roleService.updateByExcel(file.getOriginalFilename(),file.getInputStream(),aClass,fieldCollection.getValuefields());
+            resultInfo = roleService.updateByExcel(file.getOriginalFilename(),file.getInputStream(),aClass,fieldCollection.getValuefields());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return resultInfo;
+    }
+    @RequestMapping("/getTemplateFields")
+    public ResultInfo getTemplateFields(String project){
+        ResultInfo resultInfo=new ResultInfo();
+        Map<String, String> account = ExcelUtil.getObjectObjectFields(project);
+        resultInfo.setData(account);
+        return resultInfo;
+    }
+
+    @RequestMapping("/getTemplate")
+    public void getTemplate(HttpServletResponse response,@RequestBody List<String> titleNames,String fileName) throws IOException {
+        ResultInfo resultInfo=new ResultInfo();
+        HSSFWorkbook workbook = ExcelUtil.getTemplate(titleNames);
+        response.setContentType("application/octet-stream;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename="+ fileName);
+        ServletOutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
     }
 }

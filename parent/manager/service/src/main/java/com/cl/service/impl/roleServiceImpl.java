@@ -4,11 +4,11 @@ import com.cl.bean.Role;
 import com.cl.common.bean.ResultInfo;
 import com.cl.dao.IRoleDao;
 import com.cl.service.IRoleService;
+import com.cl.util.ExcelUtil;
 import com.cl.util.UUIDUtil;
-import com.cl.util.UpdateByExcel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @Service
 public class roleServiceImpl implements IRoleService {
-    @Autowired
+    @Resource
     private IRoleDao roleDao;
 
     @Override
@@ -33,7 +33,7 @@ public class roleServiceImpl implements IRoleService {
     @Override
     public ResultInfo updateByExcel(String fileName, InputStream is, Class<Role> tClass, Map<String, String> fieldNames) {
         ResultInfo resultInfo=new ResultInfo();
-        List<Role> roles = UpdateByExcel.updateByExcel(fileName, is, tClass, fieldNames);
+        List<Role> roles = ExcelUtil.getObjectListFromExcel(fileName, is, tClass, fieldNames);
         int row=0;
         try {
             for (Role role : roles) {
