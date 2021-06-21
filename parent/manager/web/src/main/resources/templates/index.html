@@ -8,9 +8,11 @@
 <body>
     <p1>
         <div>
-            <form action="/manager/account/getTemplate?fileName=测试" type="post">
+            <form action="/manager/account/getTemplate" type="post">
+                <input name="">
                 <input type="submit">
             </form>
+            <img src="/manager/account/getQRCode" width="100px" height="100px" border="1">
         </div>
     </p1>
 <script>
@@ -21,8 +23,17 @@
             type:"post",
             contentType:"application/json",
             data:JSON.stringify(vlues),
-            success:function (res) {
-
+            success:function (response, status, request) {
+                var disp = request.getResponseHeader('Content-Disposition');
+                if (disp && disp.search('attachment') != -1) {
+                    var form = $('<form method="POST" action="' + url + '">');
+                    $.each(params, function(k, v) {
+                        form.append($('<input type="hidden" name="' + k +
+                            '" value="' + v + '">'));
+                    });
+                    $('body').append(form);
+                    form.submit();
+                }
             }
         });
     })

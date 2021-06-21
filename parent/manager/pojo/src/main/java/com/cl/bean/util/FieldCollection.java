@@ -8,28 +8,28 @@ import java.util.Map;
  * @date 2021/4/2215:51
  */
 public class FieldCollection {
-
-    private Map<String,String> valuefields;
-
+    /**属性名称与中文映射集合*/
+    private Map<String,String> valueFields;
+    /**条件属性名称与中文映射集合*/
     private Map<String,String> conditionsFields;
-
-    private String object;
+    /**模块名称*/
+    private String module;
 
     public FieldCollection() {
     }
 
-    public FieldCollection(Map<String, String> valuefields, Map<String, String> conditionsFields, String object) {
-        this.valuefields = valuefields;
+    public FieldCollection(Map<String, String> valueFields, Map<String, String> conditionsFields, String module) {
+        this.valueFields = valueFields;
         this.conditionsFields = conditionsFields;
-        this.object = object;
+        this.module = module;
     }
 
-    public Map<String, String> getValuefields() {
-        return valuefields;
+    public Map<String, String> getValueFields() {
+        return valueFields;
     }
 
-    public void setValuefields(Map<String, String> valuefields) {
-        this.valuefields = valuefields;
+    public void setValueFields(Map<String, String> valueFields) {
+        this.valueFields = valueFields;
     }
 
     public Map<String, String> getConditionsFields() {
@@ -40,11 +40,11 @@ public class FieldCollection {
         this.conditionsFields = conditionsFields;
     }
 
-    public String getObject() {
-        return object;
+    public String getModule() {
+        return module;
     }
 
-    public void setObject(String object) {
-        this.object = object;
+    public void setModule(String module) {
+        this.module = module;
     }
 }

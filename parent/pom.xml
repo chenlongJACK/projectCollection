@@ -11,6 +11,7 @@
         <module>common</module>
         <module>./manager</module>
         <module>designpattern</module>
+        <module>user-center</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -86,6 +87,17 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>3.8</version>
+            </dependency>
+            <!--二维码依赖-->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>3.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>3.3.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

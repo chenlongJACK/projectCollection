@@ -7,6 +7,8 @@ import com.cl.common.bean.ResultInfo;
 import com.cl.dao.IAccountDao;
 import com.cl.service.IRoleService;
 import com.cl.util.ExcelUtil;
+import com.cl.util.QRCodeUtil;
+import com.google.zxing.WriterException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -18,9 +20,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -49,12 +53,19 @@ public class AccountController {
         ResultInfo resultInfo=new ResultInfo();
         return resultInfo;
     }
+
+    /**
+     *
+     * @param file
+     * @param fieldCollection
+     * @return
+     */
     @RequestMapping("upload")
     public ResultInfo upload(@RequestPart MultipartFile file, @RequestPart FieldCollection fieldCollection){
         ResultInfo resultInfo=new ResultInfo();
         String className ="";
         Class aClass = null;
-        String object = fieldCollection.getObject();
+        String object = fieldCollection.getModule();
         switch (object){
             case "account": className="com.cl.bean.Account";
                 break;
@@ -64,20 +75,33 @@ public class AccountController {
         }
         try {
             aClass = Class.forName(className);
-            resultInfo = roleService.updateByExcel(file.getOriginalFilename(),file.getInputStream(),aClass,fieldCollection.getValuefields());
+            resultInfo = roleService.updateByExcel(file.getOriginalFilename(),file.getInputStream(),aClass,fieldCollection.getValueFields());
         } catch (Exception e) {
             e.printStackTrace();
         }
         return resultInfo;
     }
+
+    /**
+     * @Description 根据项目类型返回可更新字段及条件字段集合
+     * @param project
+     * @return
+     */
     @RequestMapping("/getTemplateFields")
     public ResultInfo getTemplateFields(String project){
         ResultInfo resultInfo=new ResultInfo();
-        Map<String, String> account = ExcelUtil.getObjectObjectFields(project);
-        resultInfo.setData(account);
+        Map<String, Map<String, String>> fields = ExcelUtil.getObjectObjectFields(project);
+        resultInfo.setData(fields);
         return resultInfo;
     }
 
+    /**
+     * @Description 根据传入的标题返回excel文件
+     * @param response
+     * @param titleNames
+     * @param fileName
+     * @throws IOException
+     */
     @RequestMapping("/getTemplate")
     public void getTemplate(HttpServletResponse response,@RequestBody List<String> titleNames,String fileName) throws IOException {
         ResultInfo resultInfo=new ResultInfo();
@@ -86,5 +110,25 @@ public class AccountController {
         response.setHeader("Content-Disposition", "attachment;filename="+ fileName);
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
+    }
+
+    /**
+     * @Description 二维码图片
+     * @param response
+     */
+    @RequestMapping("/getQRCode")
+    public void getQRCode(HttpServletResponse response){
+        try {
+            BufferedImage bufferedImage = QRCodeUtil.createQRCode("我去年买了个表");
+            ImageIO.write(bufferedImage, "png", response.getOutputStream());
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @RequestMapping("/getVerificationCode")
+    public void getVerificationCode(){
+
     }
 }

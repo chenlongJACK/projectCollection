@@ -1,5 +1,6 @@
 package com.cl.util;
 
+import com.cl.annotation.Condition;
 import com.cl.annotation.Excel;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -29,7 +30,7 @@ import java.util.Map;
 public class ExcelUtil {
     /**
      * @Description 下载模板
-     * @param titleNames
+     * @param titleNames 模板标题集合
      */
     public static HSSFWorkbook getTemplate(List<String> titleNames){
         //创建Excel工作簿
@@ -49,38 +50,49 @@ public class ExcelUtil {
 
     /**
      * @Description 获取对象属性列表
-     * @param module
+     * @param module 对象类型
      */
-    public static Map<String,String> getObjectObjectFields(String module){
+    public static Map<String,Map<String,String>> getObjectObjectFields(String module){
+        Map<String,Map<String,String>> result=new HashMap<>();
         String className ="";
-        Class<?> aClass = null;
         switch (module){
             case "account": className="com.cl.bean.Account";
                 break;
             default: break;
         }
+        Class<?> aClass=null;
         try {
-            aClass = Class.forName(className);
+             aClass = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        Field[] fields = aClass.getDeclaredFields();
-        Map<String,String> fieldNames=new HashMap<>();
-        for (int i = 0; i < fields.length; i++) {
-            Excel annotation = fields[i].getAnnotation(Excel.class);
-            if(annotation!=null) {
-                fieldNames.put(fields[i].getName(),annotation.value());
+        if(aClass!=null) {
+            Field[] fields = aClass.getDeclaredFields();
+            Map<String, String> fieldNames = new HashMap<>();
+            result.put("fieldNames",fieldNames);
+            Map<String, String> conditionFieldNames = new HashMap<>();
+            result.put("conditionFieldNames",conditionFieldNames);
+            for (int i = 0; i < fields.length; i++) {
+                Excel excel = fields[i].getAnnotation(Excel.class);
+                Condition condition = fields[i].getAnnotation(Condition.class);
+                if (excel != null) {
+                    fieldNames.put(fields[i].getName(), excel.value());
+                }
+                if (condition != null) {
+                    conditionFieldNames.put(fields[i].getName(), condition.value());
+                }
             }
+            return result;
         }
-        return fieldNames;
+        return null;
     }
 
     /**
      * @Description 将excel文件转换为指定对象集合
-     * @param fileName
-     * @param is
-     * @param tClass
-     * @param fieldNames
+     * @param fileName excel文件名称
+     * @param is    excel文件流
+     * @param tClass class对象
+     * @param fieldNames 属性名与excel标题映射集合
      * @param <T>
      * @return
      */
@@ -120,9 +132,11 @@ public class ExcelUtil {
                 for (int i1 = 0; i1 <physicalNumberOfCells ; i1++) {
                     Field field = fieldMap.get(i1);
                     Class<?> type = field.getType();
-                    if(type==String.class) {//字符串类型
+                    //字符串类型
+                    if(type==String.class) {
                         row1.getCell(i1).setCellType(Cell.CELL_TYPE_STRING);
                     }
+                    //数字
                     if(type==Integer.class){
                         row1.getCell(i1).setCellType(Cell.CELL_TYPE_NUMERIC);
                     }
